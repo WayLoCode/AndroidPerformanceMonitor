@@ -87,9 +87,9 @@ class LooperMonitor implements Printer {
             BlockCanaryInternals.getInstance().stackSampler.start();
         }
 
-        if (null != BlockCanaryInternals.getInstance().cpuSampler) {
-            BlockCanaryInternals.getInstance().cpuSampler.start();
-        }
+//        if (null != BlockCanaryInternals.getInstance().cpuSampler) {
+//            BlockCanaryInternals.getInstance().cpuSampler.start();
+//        }
     }
 
     private void stopDump() {
@@ -97,8 +97,8 @@ class LooperMonitor implements Printer {
             BlockCanaryInternals.getInstance().stackSampler.stop();
         }
 
-        if (null != BlockCanaryInternals.getInstance().cpuSampler) {
-            BlockCanaryInternals.getInstance().cpuSampler.stop();
-        }
+//        if (null != BlockCanaryInternals.getInstance().cpuSampler) {
+//            BlockCanaryInternals.getInstance().cpuSampler.stop();
+//        }
     }
 }
