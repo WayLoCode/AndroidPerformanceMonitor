@@ -46,7 +46,6 @@ public class BlockInfo {
     public static final String KEY_QUA = "qua";
     public static final String KEY_MODEL = "model";
     public static final String KEY_API = "api-level";
-    public static final String KEY_IMEI = "imei";
     public static final String KEY_UID = "uid";
     public static final String KEY_CPU_CORE = "cpu-core";
     public static final String KEY_CPU_BUSY = "cpu-busy";
@@ -65,13 +64,9 @@ public class BlockInfo {
 
     public static String sQualifier;
     public static String sModel;
-    public static String sApiLevel = "";
-    /**
-     * The International Mobile Equipment Identity or IMEI /aɪˈmiː/ is a number,
-     * usually unique, to identify 3GPP and iDEN mobile phones
-     */
-    public static String sImei = "";
-    public static int sCpuCoreNum = -1;
+    public static String sApiLevel;
+
+    public static int sCpuCoreNum;
 
     public String qualifier;
     public String model;
@@ -99,23 +94,12 @@ public class BlockInfo {
     private StringBuilder cpuSb = new StringBuilder();
     private StringBuilder timeSb = new StringBuilder();
     private StringBuilder stackSb = new StringBuilder();
-    private static final String EMPTY_IMEI = "empty_imei";
 
     static {
         sCpuCoreNum = PerformanceUtils.getNumCores();
         sModel = Build.MODEL;
         sApiLevel = Build.VERSION.SDK_INT + " " + VERSION.RELEASE;
         sQualifier = BlockCanaryInternals.getContext().provideQualifier();
-        try {
-            TelephonyManager telephonyManager = (TelephonyManager) BlockCanaryInternals
-                    .getContext()
-                    .provideContext()
-                    .getSystemService(Context.TELEPHONY_SERVICE);
-            sImei = telephonyManager.getDeviceId();
-        } catch (Exception exception) {
-            Log.e(TAG, NEW_INSTANCE_METHOD, exception);
-            sImei = EMPTY_IMEI;
-        }
     }
 
     public BlockInfo() {
@@ -138,7 +122,6 @@ public class BlockInfo {
         blockInfo.model = sModel;
         blockInfo.apiLevel = sApiLevel;
         blockInfo.qualifier = sQualifier;
-        blockInfo.imei = sImei;
         blockInfo.uid = BlockCanaryInternals.getContext().provideUid();
         blockInfo.processName = ProcessUtils.myProcessName();
         blockInfo.network = BlockCanaryInternals.getContext().provideNetworkType();
@@ -176,7 +159,6 @@ public class BlockInfo {
         basicSb.append(KEY_QUA).append(KV).append(qualifier).append(separator);
         basicSb.append(KEY_VERSION_NAME).append(KV).append(versionName).append(separator);
         basicSb.append(KEY_VERSION_CODE).append(KV).append(versionCode).append(separator);
-        basicSb.append(KEY_IMEI).append(KV).append(imei).append(separator);
         basicSb.append(KEY_UID).append(KV).append(uid).append(separator);
         basicSb.append(KEY_NETWORK).append(KV).append(network).append(separator);
         basicSb.append(KEY_MODEL).append(KV).append(model).append(separator);
