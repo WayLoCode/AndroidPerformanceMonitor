@@ -15,11 +15,10 @@
  */
 package com.github.moduth.blockcanary;
 
+import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
-
 import com.github.moduth.blockcanary.internal.BlockInfo;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public final class BlockCanaryInternals {
 
     LooperMonitor monitor;
     StackSampler stackSampler;
-//    CpuSampler cpuSampler;
+    CpuSampler cpuSampler;
 
     private static BlockCanaryInternals sInstance;
     private static BlockCanaryContext sContext;
@@ -43,7 +42,9 @@ public final class BlockCanaryInternals {
                 Looper.getMainLooper().getThread(),
                 sContext.provideDumpInterval());
 
-//        cpuSampler = new CpuSampler(sContext.provideDumpInterval());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            cpuSampler = new CpuSampler(sContext.provideDumpInterval());
+        }
 
         setMonitor(new LooperMonitor(new LooperMonitor.BlockListener() {
 
@@ -56,10 +57,12 @@ public final class BlockCanaryInternals {
                 if (!threadStackEntries.isEmpty()) {
                     BlockInfo blockInfo = BlockInfo.newInstance()
                             .setMainThreadTimeCost(realTimeStart, realTimeEnd, threadTimeStart, threadTimeEnd)
-//                            .setCpuBusyFlag(cpuSampler.isCpuBusy(realTimeStart, realTimeEnd))
-//                            .setRecentCpuRate(cpuSampler.getCpuRateInfo())
                             .setThreadStackEntries(threadStackEntries)
                             .flushString();
+                    if (null != cpuSampler) {
+                        blockInfo.setCpuBusyFlag(cpuSampler.isCpuBusy(realTimeStart, realTimeEnd))
+                                .setRecentCpuRate(cpuSampler.getCpuRateInfo());
+                    }
                     LogWriter.save(blockInfo.toString());
 
                     if (mInterceptorChain.size() != 0) {

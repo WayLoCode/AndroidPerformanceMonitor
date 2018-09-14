@@ -20,9 +20,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-
 import com.github.moduth.blockcanary.ui.DisplayActivity;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -52,7 +50,7 @@ public final class BlockCanary {
     /**
      * Install {@link BlockCanary}
      *
-     * @param context            Application context
+     * @param context Application context
      * @param blockCanaryContext BlockCanary context
      * @return {@link BlockCanary}
      */
@@ -96,7 +94,9 @@ public final class BlockCanary {
             mMonitorStarted = false;
             Looper.getMainLooper().setMessageLogging(null);
             mBlockCanaryCore.stackSampler.stop();
-//            mBlockCanaryCore.cpuSampler.stop();
+            if (null != mBlockCanaryCore.cpuSampler) {
+                mBlockCanaryCore.cpuSampler.stop();
+            }
         }
     }
 
